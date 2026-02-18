@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,8 +18,7 @@
         
         <activity
             android:name=".LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,8 +27,7 @@
 
         <activity
             android:name=".SignupActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
@@ -38,7 +40,28 @@
         <activity
             android:name=".AdminDashboardActivity"
             android:exported="false" />
-            
+
+        <activity
+            android:name=".UpdateProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AddEventActivity"
+            android:exported="false"
+            android:label="Add Event" />
+
+        <activity android:name=".ManageMembersActivity" android:exported="false" />
+        <activity android:name=".ManageEventsActivity" android:exported="false" />
+        <activity android:name=".GalleryActivity" android:exported="false" />
+        <activity android:name=".AboutUsActivity" android:exported="false" />
+        <activity android:name=".TeamMembersActivity" android:exported="false" />
+        <activity android:name=".ProjectDescriptionActivity" android:exported="false" />
+
+        <receiver
+            android:name=".EventNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>

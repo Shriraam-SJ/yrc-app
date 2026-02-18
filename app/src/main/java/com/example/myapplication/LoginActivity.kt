@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -36,8 +37,19 @@ class LoginActivity : AppCompatActivity() {
                 domain.contains("tce.edu") -> Intent(this, AdminDashboardActivity::class.java)
                 else -> Intent(this, MainActivity::class.java)
             }
-            startActivity(intent)
-            finish()
+
+            // Show Progress Dialog before navigating
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setMessage("Logging in...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            // Simulate a delay (buffered loader)
+            Handler(Looper.getMainLooper()).postDelayed({
+                progressDialog.dismiss()
+                startActivity(intent)
+                finish()
+            }, 2000) // 2 seconds delay
         }
 
         if (intent.getBooleanExtra("SIGNUP_SUCCESS", false)) {
