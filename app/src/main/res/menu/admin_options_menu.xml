@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_option_menu"
+        android:title="Option Menu"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/nav_manage_members"
+                android:title="Manage Members" />
+            <item
+                android:id="@+id/nav_manage_events"
+                android:title="Manage Events" />
+            <item
+                android:id="@+id/nav_gallery"
+                android:title="Gallery" />
+            <item
+                android:id="@+id/nav_about_us"
+                android:title="About Us" />
+            <item
+                android:id="@+id/nav_team_members"
+                android:title="Team Members" />
+            <item
+                android:id="@+id/nav_project_desc"
+                android:title="Project Description" />
+        </menu>
+    </item>
+</menu>
