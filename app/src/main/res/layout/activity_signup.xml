@@ -6,7 +6,6 @@
     android:padding="24dp"
     android:gravity="center"
     android:background="@color/white">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +13,6 @@
         android:textSize="48sp"
         android:textStyle="bold"
         android:textColor="@color/red_primary" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,46 +20,106 @@
         android:textSize="18sp"
         android:textColor="@color/red_dark"
         android:layout_marginBottom="32dp" />
-
     <EditText
         android:id="@+id/etFullName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/name"
+        android:hint="Full Name"
         android:inputType="textPersonName"
         android:padding="16dp"
         android:background="@drawable/edit_text_bg"
         android:layout_marginBottom="16dp" />
-
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/email"
+        android:hint="Email ID"
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:background="@drawable/edit_text_bg"
         android:layout_marginBottom="16dp" />
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:inputType="phone"
+        android:padding="16dp"
+        android:background="@drawable/edit_text_bg"
+        android:layout_marginBottom="16dp" />
+    <EditText
+        android:id="@+id/etYearJoined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Year Joined"
+        android:inputType="number"
+        android:padding="16dp"
+        android:background="@drawable/edit_text_bg"
+        android:layout_marginBottom="16dp" />
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Blood Group"
+        android:layout_marginBottom="16dp">
 
+        <AutoCompleteTextView
+            android:id="@+id/etBloodGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:padding="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/password"
+        android:hint="Password"
         android:inputType="textPassword"
         android:padding="16dp"
         android:background="@drawable/edit_text_bg"
         android:layout_marginBottom="24dp" />
 
+    <LinearLayout
+        android:id="@+id/llOtpSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tvOtpMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OTP sent to your email, enter it to verify"
+            android:layout_marginBottom="8dp"/>
+        <EditText
+            android:id="@+id/etOtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter OTP"
+            android:inputType="number"
+            android:padding="16dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="16dp" />
+        <Button
+            android:id="@+id/btnVerifyOtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Verify"
+            android:backgroundTint="@color/red_primary"
+            android:textColor="@color/white"
+            android:padding="12dp" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/signup"
+        android:text="Register"
         android:backgroundTint="@color/red_primary"
         android:textColor="@color/white"
         android:padding="12dp" />
-
     <TextView
         android:id="@+id/tvGoToLogin"
         android:layout_width="wrap_content"
@@ -69,5 +127,4 @@
         android:text="@string/already_have_account"
         android:textColor="@color/red_primary"
         android:layout_marginTop="16dp" />
-
 </LinearLayout>

@@ -22,6 +22,9 @@
                 android:id="@+id/nav_team_members"
                 android:title="Team Members" />
             <item
+                android:id="@+id/nav_search_blood"
+                android:title="Search Blood" />
+            <item
                 android:id="@+id/nav_project_desc"
                 android:title="Project Description" />
         </menu>

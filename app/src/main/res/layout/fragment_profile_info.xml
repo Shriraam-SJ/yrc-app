@@ -21,20 +21,20 @@
             android:padding="4dp" />
 
         <TextView
-            android:id="@+id/tvAdminName"
+            android:id="@+id/tvProfileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dr. Rajesh Kumar"
+            android:text="User Name"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvAdminRole"
+            android:id="@+id/tvProfileRole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="HOD - Department of CSE"
+            android:text="Member"
             android:textColor="@color/red_dark"
             android:textSize="16sp" />
 
@@ -60,23 +60,34 @@
                     android:layout_marginBottom="12dp" />
 
                 <TextView
+                    android:id="@+id/tvProfileEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email: rajesh.cse@tce.edu"
+                    android:text="Email: "
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
+                    android:id="@+id/tvProfilePhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Staff ID: TCE12345"
+                    android:text="Phone: "
                     android:textSize="16sp"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
+                    android:id="@+id/tvProfileYear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Blood Group: O+ve"
+                    android:text="Year Joined: "
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvProfileBloodGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blood Group: "
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/red_primary" />
@@ -85,10 +96,10 @@
         </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/btnUpdateProfile"
+            android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update Profile"
+            android:text="Logout"
             android:backgroundTint="@color/red_primary"
             android:textColor="@color/white" />
 

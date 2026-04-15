@@ -2,12 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.SEND_SMS" tools:ignore="SMS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
         android:allowBackup="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -56,11 +63,22 @@
         <activity android:name=".AboutUsActivity" android:exported="false" />
         <activity android:name=".TeamMembersActivity" android:exported="false" />
         <activity android:name=".ProjectDescriptionActivity" android:exported="false" />
+        <activity android:name=".EventDetailsActivity" android:exported="false" />
+        <activity android:name=".AttendanceActivity" android:exported="false" />
+        <activity android:name=".SearchBloodActivity" android:exported="false" />
 
         <receiver
             android:name=".EventNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".EventService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Event notification and SMS alerts" />
+        </service>
 
     </application>
 

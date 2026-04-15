@@ -1,28 +1,25 @@
 package com.example.myapplication
 
-import android.app.AlarmManager
 import android.app.DatePickerDialog
-import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.myapplication.network.RetrofitClient
+import com.example.myapplication.network.Event
+import com.example.myapplication.network.SessionManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 import java.util.*
 
 class AddEventActivity : AppCompatActivity() {
 
-    private var selectedYear = 0
-    private var selectedMonth = 0
-    private var selectedDay = 0
-    private var selectedHour = 0
-    private var selectedMinute = 0
+    private var selectedDate = ""
+    private var fromTime = ""
+    private var toTime = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,103 +31,90 @@ class AddEventActivity : AppCompatActivity() {
         val etVenue = findViewById<TextInputEditText>(R.id.etVenue)
         val etVolunteers = findViewById<TextInputEditText>(R.id.etVolunteers)
         val etDate = findViewById<TextInputEditText>(R.id.etDate)
-        val etTime = findViewById<TextInputEditText>(R.id.etTime)
+        val etFromTime = findViewById<TextInputEditText>(R.id.etFromTime)
+        val etToTime = findViewById<TextInputEditText>(R.id.etToTime)
         val btnSubmit = findViewById<Button>(R.id.btnSubmit)
+        val sessionManager = SessionManager(this)
 
         rgEventType.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.rbMeet) {
-                tilVolunteers.visibility = View.GONE
-            } else {
-                tilVolunteers.visibility = View.VISIBLE
-            }
+            tilVolunteers.visibility = if (checkedId == R.id.rbMeet) View.GONE else View.VISIBLE
         }
 
         etDate.setOnClickListener {
             val c = Calendar.getInstance()
-            val year = c.get(Calendar.YEAR)
-            val month = c.get(Calendar.MONTH)
-            val day = c.get(Calendar.DAY_OF_MONTH)
-
-            val dpd = DatePickerDialog(this, { _, year, monthOfYear, dayOfMonth ->
-                selectedYear = year
-                selectedMonth = monthOfYear
-                selectedDay = dayOfMonth
-                etDate.setText("$dayOfMonth/${monthOfYear + 1}/$year")
-            }, year, month, day)
-            dpd.show()
+            DatePickerDialog(this, { _, year, month, day ->
+                selectedDate = String.format("%04d-%02d-%02d", year, month + 1, day)
+                etDate.setText(selectedDate)
+            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        etTime.setOnClickListener {
-            val c = Calendar.getInstance()
-            val hour = c.get(Calendar.HOUR_OF_DAY)
-            val minute = c.get(Calendar.MINUTE)
+        etFromTime.setOnClickListener {
+            showTimePicker { time ->
+                fromTime = time
+                etFromTime.setText(fromTime)
+            }
+        }
 
-            val tpd = TimePickerDialog(this, { _, hourOfDay, minute ->
-                selectedHour = hourOfDay
-                selectedMinute = minute
-                etTime.setText(String.format("%02d:%02d", hourOfDay, minute))
-            }, hour, minute, true)
-            tpd.show()
+        etToTime.setOnClickListener {
+            showTimePicker { time ->
+                toTime = time
+                etToTime.setText(toTime)
+            }
         }
 
         btnSubmit.setOnClickListener {
-            val type = if (rgEventType.checkedRadioButtonId == R.id.rbEvent) "Event" else "Meet"
             val name = etEventName.text.toString()
             val venue = etVenue.text.toString()
-            val volunteers = if (type == "Event") etVolunteers.text.toString() else null
-            val date = etDate.text.toString()
-            val time = etTime.text.toString()
+            val desc = "Type: ${if (rgEventType.checkedRadioButtonId == R.id.rbEvent) "Event" else "Meet"}. Volunteers: ${etVolunteers.text}"
+            
+            if (name.isNotEmpty() && venue.isNotEmpty() && selectedDate.isNotEmpty() && fromTime.isNotEmpty() && toTime.isNotEmpty()) {
+                val user = sessionManager.fetchUser()
+                val userId = user?.id ?: ""
+                
+                if (userId.isEmpty()) {
+                    Toast.makeText(this@AddEventActivity, "Error: User ID not found. Please re-login.", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
 
-            if (name.isNotEmpty() && venue.isNotEmpty() && date.isNotEmpty() && time.isNotEmpty()) {
-                val newEvent = Event(type, name, venue, volunteers, date, time)
-                EventRepository.addEvent(newEvent)
-                
-                scheduleNotification(name)
-                
-                Toast.makeText(this, "Event Added successfully", Toast.LENGTH_SHORT).show()
-                finish()
+                val event = Event(
+                    _id = null, // MongoDB generates this
+                    title = name,
+                    description = desc,
+                    date = selectedDate,
+                    fromTime = fromTime,
+                    toTime = toTime,
+                    location = venue,
+                    postedBy = userId,
+                    optedInStudents = emptyList(),
+                    attendance = emptyList()
+                )
+
+                lifecycleScope.launch {
+                    try {
+                        val response = RetrofitClient.instance.createEvent(event)
+                        if (response.isSuccessful) {
+                            Toast.makeText(this@AddEventActivity, "Event Posted Successfully", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            android.util.Log.e("AddEvent", "Server Error: $errorBody")
+                            Toast.makeText(this@AddEventActivity, "Failed: ${response.code()} $errorBody", Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("AddEvent", "Exception", e)
+                        Toast.makeText(this@AddEventActivity, "Network Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                    }
+                }
             } else {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun scheduleNotification(eventName: String) {
-        val calendar = Calendar.getInstance()
-        calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute, 0)
-
-        val intent = Intent(this, EventNotificationReceiver::class.java)
-        intent.putExtra("EVENT_NAME", eventName)
-        
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            System.currentTimeMillis().toInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-            } else {
-                alarmManager.set(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-            }
-        } else {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
+    private fun showTimePicker(onTimeSelected: (String) -> Unit) {
+        val c = Calendar.getInstance()
+        TimePickerDialog(this, { _, hour, minute ->
+            onTimeSelected(String.format("%02d:%02d", hour, minute))
+        }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show()
     }
 }

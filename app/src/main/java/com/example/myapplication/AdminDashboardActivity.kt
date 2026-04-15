@@ -86,6 +86,7 @@ class AdminDashboardActivity : AppCompatActivity() {
             R.id.nav_gallery -> Intent(this, GalleryActivity::class.java)
             R.id.nav_about_us -> Intent(this, AboutUsActivity::class.java)
             R.id.nav_team_members -> Intent(this, TeamMembersActivity::class.java)
+            R.id.nav_search_blood -> Intent(this, SearchBloodActivity::class.java)
             R.id.nav_project_desc -> Intent(this, ProjectDescriptionActivity::class.java)
             else -> null
         }
